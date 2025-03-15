@@ -1,0 +1,67 @@
+/* public/css/custom.css */
+
+body {
+    background-color: #f8f9fa; /* Warna latar belakang body */
+    font-family: 'Nunito', sans-serif; /* Contoh font, pastikan terhubung */
+}
+
+.custom-card {
+    border-radius: 1rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+}
+
+.custom-header-text {
+    color: #0d6efd; /* Warna biru primer */
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-primary {
+    border-radius: 0.5rem;
+}
+
+.btn-outline-secondary {
+    border-radius: 0.5rem;
+}
+
+.form-control {
+    border-radius: 0.5rem;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.table-row:hover {
+    background-color: #e9ecef;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.alert-success {
+    border-radius: 0.5rem;
+}
+
+/* Optional: Styling untuk input group di aksi */
+.input-group > .form-control.form-control-sm:not(:first-child):not(:last-child),
+.input-group > .btn.btn-outline-primary.btn-sm:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+
+.input-group > .form-control.form-control-sm:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group > .btn.btn-outline-primary.btn-sm:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
