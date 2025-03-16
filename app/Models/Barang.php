@@ -27,4 +27,9 @@ class Barang extends Model
     {
         return $this->hasMany(TransaksiPenjualan::class, 'kode_barang');
     }
+
+    public function pembelian()
+    {
+        return $this->hasMany(Pembelian::class);
+    }
 }

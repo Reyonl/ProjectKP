@@ -47,6 +47,8 @@
                     <th class="px-4 py-2 border border-gray-200 text-center">No</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Kode Barang</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Nama Barang</th>
+                    <th class="px-4 py-2 border border-gray-200 text-left">Harga Modal</th>
+                    <th class="px-4 py-2 border border-gray-200 text-left">Harga Jual</th>
                     <th class="px-4 py-2 border border-gray-200 text-center">Stok</th>
                     <th class="px-4 py-2 border border-gray-200 text-center">Aksi</th>
                 </tr>
@@ -57,6 +59,8 @@
                     <td class="px-4 py-2 border border-gray-200 text-center">{{ $index + 1 }}</td>
                     <td class="px-4 py-2 border border-gray-200">{{ $item->kode_barang }}</td>
                     <td class="px-4 py-2 border border-gray-200">{{ $item->nama_sparepart }}</td>
+                    <td class="px-4 py-2 border border-gray-200">Rp {{number_format($item->modal, 0,',','.') }}</td>
+                    <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
                     <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
                     <td class="px-4 py-2 border border-gray-200 text-center">
                         <!-- Tombol Belanja -->

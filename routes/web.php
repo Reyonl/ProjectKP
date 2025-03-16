@@ -32,3 +32,14 @@ Route::prefix('laporan')->group(function () {
     Route::get('/belanja', [LaporanController::class, 'index'])->name('laporan.belanja');
     Route::get('/', [LaporanController::class, 'index'])->name('laporan.index');
 });
+
+
+
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
+Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
+Route::delete('/laporan/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
+
+Route::resource('riwayat_belanja', LaporanController::class);
+
+Route::delete('riwayat_belanja/{id}', [LaporanController::class, 'destroy'])->name('riwayat_belanja.destroy');

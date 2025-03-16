@@ -2,37 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Riwayat;
-use App\Exports\LaporanExport;
-use PDF;
-use Excel;
+use App\Models\TransaksiPenjualan;
+use App\Models\Pembelian;
+use App\Models\RiwayatBelanja;
+use App\Models\Barang;
+use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
-    // Menampilkan laporan belanja dengan filter dan paginasi
-    public function index(Request $request)
+    public function index()
     {
-        $query = Riwayat::query()
+        // Mengambil data riwayat belanja dengan join ke tabel barang
+        $riwayat = RiwayatBelanja::select(
+                'riwayat_belanja.*',
+                'barang.nama_sparepart',
+                'barang.modal',
+                'barang.harga_jual' // Ambil harga jual dari barang
+            )
             ->join('barang', 'riwayat_belanja.kode_barang', '=', 'barang.kode_barang')
-            ->select('barang.nama_sparepart', 'riwayat_belanja.jumlah', 'riwayat_belanja.tanggal_belanja');
+            ->orderBy('riwayat_belanja.created_at', 'desc')
+            ->get();
 
-        // Filter nama barang
-        if ($request->filled('search')) {
-            $query->where('barang.nama_sparepart', 'like', '%' . $request->search . '%');
-        }
+        // Mengambil data riwayat terjual dan mengurutkannya berdasarkan tanggal terbaru
+        $riwayatTerjual = TransaksiPenjualan::select(
+                'transaksi_penjualan.*',
+                'barang.nama_sparepart',
+                'barang.harga_jual'
+            )
+            ->join('barang', 'transaksi_penjualan.kode_barang', '=', 'barang.kode_barang')
+            ->orderBy('transaksi_penjualan.tanggal', 'desc')
+            ->get();
 
-        // Filter rentang tanggal
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('riwayat_belanja.tanggal_belanja', [$request->start_date, $request->end_date]);
-        }
+        // Total penjualan berdasarkan bulan
+        $totalPenjualanBulanan = TransaksiPenjualan::selectRaw('
+                SUM(total) as total,
+                MONTH(tanggal) as bulan,
+                YEAR(tanggal) as tahun
+            ')
+            ->groupByRaw('MONTH(tanggal), YEAR(tanggal)')
+            ->orderByRaw('YEAR(tanggal) DESC, MONTH(tanggal) DESC')
+            ->get();
 
-        $riwayat = $query->orderBy('riwayat_belanja.tanggal_belanja', 'desc')->paginate(10);
-        $totalBelanja = $query->sum('jumlah');
-
-        return view('laporan.index', compact('riwayat', 'totalBelanja'));
+        return view('laporan.index', compact('riwayat', 'riwayatTerjual', 'totalPenjualanBulanan'));
     }
 
+    public function destroy($id)
+    {
+        $riwayat = Pembelian::findOrFail($id);
+        $riwayat->delete();
 
-
+        return redirect()->route('riwayat_belanja.index')->with('success', 'Data berhasil dihapus.');
+    }
 }
