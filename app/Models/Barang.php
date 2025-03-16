@@ -16,7 +16,7 @@ class Barang extends Model
     public $incrementing = false; // <- karena primary key pakai string
     protected $keyType = 'string';
 
-    protected $fillable = ['kode_barang', 'nama_sparepart', 'modal', 'harga_jual'];
+    protected $fillable = ['kode_barang', 'nama_sparepart', 'modal', 'harga_jual','stok'];
 
     public function stok()
     {

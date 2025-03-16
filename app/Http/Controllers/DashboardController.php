@@ -21,4 +21,6 @@ class DashboardController extends Controller
 
         return view('dashboard.index', compact('jumlahBarang', 'jumlahPenjualan', 'jumlahService', 'totalProfit', 'jumlahTeknisi'));
     }
+
+    
 }

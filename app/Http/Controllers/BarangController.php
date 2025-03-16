@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
@@ -27,7 +28,6 @@ class BarangController extends Controller
 
         return view('barang.index', compact('barang'));
     }
-
 
     // Menampilkan form tambah barang
     public function create()
@@ -71,4 +71,59 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Stok berhasil diperbarui!');
     }
+
+    // Menampilkan form belanja barang
+    public function formBelanja($kode_barang)
+    {
+        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+        return view('barang.belanja', compact('barang'));
+    }
+
+    // Proses belanja barang (mengurangi stok)
+    public function prosesBelanja(Request $request, $kode_barang)
+    {
+        // Validasi input
+        $request->validate([
+            'jumlah' => 'required|integer|min:1'
+        ]);
+
+        // Cari barang berdasarkan kode_barang
+        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+
+        // **Tambahkan stok barang** (bukan kurangi)
+        $barang->increment('stok', $request->jumlah);
+
+        // Simpan ke tabel riwayat_belanja
+        DB::table('riwayat_belanja')->insert([
+            'kode_barang' => $barang->kode_barang,
+            'jumlah' => $request->jumlah,
+            'tanggal_belanja' => now()
+        ]);
+
+        // Redirect ke daftar barang dengan pesan sukses
+        return redirect()->route('barang.index')->with('success', 'Stok barang berhasil ditambahkan dan tercatat di riwayat belanja.');
+    }
+
+    public function prosesPenjualan(Request $request, $kode_barang)
+{
+    // Validasi input
+    $request->validate([
+        'jumlah' => 'required|integer|min:1'
+    ]);
+
+    // Cari barang berdasarkan kode_barang
+    $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+
+    // Periksa apakah stok mencukupi
+    if ($barang->stok < $request->jumlah) {
+        return redirect()->route('barang.index')->with('error', 'Stok tidak mencukupi!');
+    }
+
+    // **Kurangi stok barang**
+    $barang->decrement('stok', $request->jumlah);
+
+    return redirect()->route('barang.index')->with('success', 'Stok barang berhasil dikurangi.');
+}
+
+
 }
