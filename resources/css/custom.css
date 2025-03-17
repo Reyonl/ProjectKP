@@ -65,3 +65,9 @@ body {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+body {
+    font-family: "Itim", cursive;
+}

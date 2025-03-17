@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-10">
+<div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-10 itim-regular">
     <h1 class="text-2xl font-semibold mb-6 text-gray-800">Tambah Barang</h1>
 
     @if ($errors->any())
@@ -36,7 +36,7 @@
         <div>
             <label for="modal" class="block text-sm font-medium text-gray-700">Modal</label>
             <div class="relative">
-                <span class="absolute left-3 top-2 text-gray-500">Rp</span>
+                <span class="absolute left-3 top-2 text-gray-500 ">Rp</span>
                 <input type="text" name="modal" id="modal" placeholder="Masukkan Modal"
                     class="mt-1 block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
                     required>

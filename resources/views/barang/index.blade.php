@@ -1,22 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
+<div class="max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 itim-regular">
     <h1 class="text-2xl font-semibold mb-6 text-gray-800">Daftar Barang</h1>
 
     <!-- Form Pencarian -->
     <form action="{{ route('barang.index') }}" method="GET" class="mb-6">
         <div class="flex items-center gap-2 justify-end">
-            <!-- Icon Search -->
-            <div class="relative">
-                <button type="button" id="search-btn" class="p-2">
-                    <svg class="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.35 4.35a7.5 7.5 0 0010.3 10.3z"></path>
-                    </svg>
-                </button>
-            </div>
+            <!-- Dropdown Sorting -->
+            {{-- <select name="sort" class="border border-gray-300 rounded-lg py-2 px-4 shadow-md">
+                <option value="">Urutkan</option>
+                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>A-Z</option>
+                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Z-A</option>
+            </select> --}}
 
-            <!-- Input Search (Hidden Default) -->
+            <!-- Input Search -->
             <div id="search-field" class="opacity-0 scale-0 transition-all duration-300 ease-in-out origin-left">
                 <input type="text" name="search"
                     class="w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md"
@@ -30,7 +28,7 @@
                 Cari
             </button>
 
-            @if(request('search'))
+            @if(request('search') || request('sort'))
                 <a href="{{ route('barang.index') }}"
                     class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
                     Reset
@@ -38,6 +36,7 @@
             @endif
         </div>
     </form>
+
 
 
     <!-- Button Tambah Barang -->
@@ -49,9 +48,18 @@
     </div>
 
     <!-- Tabel Daftar Barang -->
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto itim-regular">
         <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg shadow-md">
             <thead>
+                <th>
+                    Nama Barang
+                    @if(request('sort') == 'asc')
+                        🔼
+                    @elseif(request('sort') == 'desc')
+                        🔽
+                    @endif
+                </th>
+
                 <tr class="bg-gray-100 text-gray-700">
                     <th class="px-4 py-2 border border-gray-200 text-center">No</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Kode Barang</th>
@@ -72,12 +80,49 @@
                     <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
                     <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
                     <td class="px-4 py-2 border border-gray-200 text-center">
-                        <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST" class="inline-block">
-                            @csrf
-                            <input type="number" name="jumlah" min="1" value="1" class="w-16 border border-gray-300 rounded px-2 py-1 text-center" required>
-                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
+                        <div x-data="{ open: false }">
+                            <!-- Tombol untuk membuka pop-up -->
+                            <button @click="open = true" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
                                 Update Stok
                             </button>
+
+                            <!-- Pop-up Modal -->
+                            <div x-show="open"
+                                x-transition:enter="transition ease-out duration-200 transform"
+                                x-transition:enter-start="opacity-0 scale-90"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-150 transform"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-90"
+                                class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+                            >
+                                <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+                                    <h2 class="text-lg font-semibold mb-4">Tambah Stok</h2>
+
+                                    <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST">
+                                        @csrf
+                                        <div class="mb-4">
+                                            <label for="jumlah" class="block text-gray-700 font-medium">Jumlah Stok</label>
+                                            <input type="number" name="jumlah" min="1" value="1" required
+                                                class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                        </div>
+
+                                        <div class="flex justify-end space-x-2">
+                                            <button type="button" @click="open = false"
+                                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">
+                                                Batal
+                                            </button>
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                                                Simpan
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
                         </form>
                         <a href="{{ route('barang.edit', $item->kode_barang) }}" class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded">
                             Edit

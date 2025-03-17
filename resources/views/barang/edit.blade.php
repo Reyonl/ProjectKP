@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-lg mx-auto bg-white p-6 border rounded-lg shadow-md">
+<div class="max-w-lg mx-auto bg-white p-6 border rounded-lg shadow-md itim-regular">
     <h2 class="text-xl font-bold mb-4">Edit Barang</h2>
 
     <form action="{{ route('barang.update', $barang->kode_barang) }}" method="POST">
@@ -31,7 +31,7 @@
         <!-- Harga Jual -->
         <div class="mb-4">
             <label for="harga_jual" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-            <input type="number" id="harga_jual" name="harga_jual" value="{{ $barang->harga_jual }}"
+            <input type="number" id="harga_jual" name="harga_jual" span value="{{ $barang->harga_jual }}"
                 class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
             @error('harga_jual')
                 <span class="text-red-500 text-sm">{{ $message }}</span>

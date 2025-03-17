@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow itim-regular">
     <h2 class="text-xl font-semibold mb-4">Belanja Barang</h2>
 
     {{-- Menampilkan Nama Barang --}}
