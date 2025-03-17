@@ -43,4 +43,31 @@ class RiwayatBelanjaController extends Controller
 
         return redirect()->route('riwayat_belanja.index')->with('success', 'Riwayat belanja berhasil dihapus.');
     }
+
+    // app/Http/Controllers/RiwayatBelanjaController.php
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'kode_barang' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+        ]);
+
+        $riwayat = RiwayatBelanja::findOrFail($id);
+
+        // Update data riwayat belanja
+        $riwayat->barang->kode_barang = $request->kode_barang;
+        $riwayat->jumlah = $request->jumlah;
+
+        // Hitung ulang total harga (modal * jumlah)
+        $riwayat->total_harga = $riwayat->barang->modal * $request->jumlah;
+
+        $riwayat->save();
+
+        return redirect()->route('riwayat_belanja.index')->with('success', 'Data berhasil diupdate!');
+    }
+
+
+
+
 }

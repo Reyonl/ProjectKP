@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
-    // Menampilkan daftar barang dengan fitur pencarian
+    // Menampilkan daftar barang dengan fitur pencarian dan pagination
     public function index(Request $request)
     {
         $query = Barang::query();
@@ -19,9 +19,8 @@ class BarangController extends Controller
                   ->orWhere('kode_barang', 'like', "%{$search}%");
         }
 
-        $barang = $query->get();
+        $barang = $query->paginate(10);
 
-        // Jika data kosong, kirim notifikasi
         if ($barang->isEmpty() && $request->filled('search')) {
             session()->flash('error', 'Barang tidak ditemukan!');
         }
@@ -41,20 +40,45 @@ class BarangController extends Controller
         $request->validate([
             'kode_barang'   => 'required|unique:barang,kode_barang|max:20',
             'nama_sparepart' => 'required|max:100',
-            'modal'         => 'required|numeric|min:0',
-            'harga_jual'    => 'required|numeric|min:0',
+            'modal'         => 'required|string',
+            'harga_jual'    => 'required|string',
             'stok'          => 'required|integer|min:0'
         ]);
 
         Barang::create([
             'kode_barang'   => $request->kode_barang,
             'nama_sparepart' => $request->nama_sparepart,
-            'modal'         => $request->modal,
-            'harga_jual'    => $request->harga_jual,
+            'modal'         => str_replace('.', '', $request->modal), // Hapus format ribuan
+            'harga_jual'    => str_replace('.', '', $request->harga_jual), // Hapus format ribuan
             'stok'          => $request->stok,
         ]);
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
+    }
+
+    // Menampilkan form edit barang
+    public function edit($kode_barang)
+    {
+        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+
+        return view('barang.edit', compact('barang'));
+    }
+
+    // Update data barang
+    public function update(Request $request, $kode_barang)
+    {
+        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+
+        $request->validate([
+            'nama_sparepart' => 'required|max:100',
+            'modal'          => 'required|numeric|min:0',
+            'harga_jual'     => 'required|numeric|min:0',
+            'stok'           => 'required|integer|min:0'
+        ]);
+
+        $barang->update($request->only(['nama_sparepart', 'modal', 'harga_jual', 'stok']));
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
 
     // Update stok barang dengan menambah stok lama
@@ -66,7 +90,6 @@ class BarangController extends Controller
             'stok' => 'required|integer|min:0',
         ]);
 
-        // Menambahkan stok baru ke stok lama
         $barang->increment('stok', $request->stok);
 
         return redirect()->route('barang.index')->with('success', 'Stok berhasil diperbarui!');
@@ -76,54 +99,43 @@ class BarangController extends Controller
     public function formBelanja($kode_barang)
     {
         $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+
         return view('barang.belanja', compact('barang'));
     }
 
-    // Proses belanja barang (mengurangi stok)
-    public function prosesBelanja(Request $request, $kode_barang)
+    // Proses belanja barang (stok berkurang)
+    public function prosesbelanja(Request $request, $kode_barang)
     {
-        // Validasi input
+        $barang = Barang::where('kode_barang', $kode_barang)->first();
+
         $request->validate([
             'jumlah' => 'required|integer|min:1'
         ]);
 
-        // Cari barang berdasarkan kode_barang
-        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
-
-        // **Tambahkan stok barang** (bukan kurangi)
+        // Tambahkan stok (bukan mengurangi)
         $barang->increment('stok', $request->jumlah);
 
-        // Simpan ke tabel riwayat_belanja
-        DB::table('riwayat_belanja')->insert([
-            'kode_barang' => $barang->kode_barang,
-            'jumlah' => $request->jumlah,
-            'tanggal_belanja' => now()
+        return back()->with('success', 'Stok berhasil diperbarui.');
+    }
+
+
+
+    // Proses penjualan barang
+    public function prosesPenjualan(Request $request, $kode_barang)
+    {
+        $request->validate([
+            'jumlah' => 'required|integer|min:1'
         ]);
 
-        // Redirect ke daftar barang dengan pesan sukses
-        return redirect()->route('barang.index')->with('success', 'Stok barang berhasil ditambahkan dan tercatat di riwayat belanja.');
+        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+
+        if ($barang->stok < $request->jumlah) {
+            return redirect()->route('barang.index')->with('error', 'Stok tidak mencukupi!');
+        }
+
+        // **Kurangi stok barang**
+        $barang->decrement('stok', $request->jumlah);
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil terjual!');
     }
-
-    public function prosesPenjualan(Request $request, $kode_barang)
-{
-    // Validasi input
-    $request->validate([
-        'jumlah' => 'required|integer|min:1'
-    ]);
-
-    // Cari barang berdasarkan kode_barang
-    $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
-
-    // Periksa apakah stok mencukupi
-    if ($barang->stok < $request->jumlah) {
-        return redirect()->route('barang.index')->with('error', 'Stok tidak mencukupi!');
-    }
-
-    // **Kurangi stok barang**
-    $barang->decrement('stok', $request->jumlah);
-
-    return redirect()->route('barang.index')->with('success', 'Stok barang berhasil dikurangi.');
-}
-
-
 }

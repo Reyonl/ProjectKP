@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LaporanPenjualanController;
 
 // Route Welcome Page
 Route::get('/', function () {
@@ -19,6 +20,8 @@ Route::prefix('barang')->group(function () {
     Route::get('/create', [BarangController::class, 'create'])->name('barang.create');
     Route::post('/', [BarangController::class, 'store'])->name('barang.store');
     Route::patch('/{kode_barang}/update-stok', [BarangController::class, 'updateStok'])->name('barang.update-stok');
+    Route::get('/barang/{kode_barang}/edit', [BarangController::class, 'edit'])->name('barang.edit');
+    Route::put('/barang/{kode_barang}', [BarangController::class, 'update'])->name('barang.update');
 
     // Route Belanja Barang
     Route::post('/belanja/{kode_barang}', [BarangController::class, 'prosesBelanja'])->name('barang.belanja');
@@ -29,17 +32,20 @@ Route::prefix('barang')->group(function () {
 
 // Route Laporan
 Route::prefix('laporan')->group(function () {
-    Route::get('/belanja', [LaporanController::class, 'index'])->name('laporan.belanja');
     Route::get('/', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/belanja', [LaporanController::class, 'belanja'])->name('laporan.belanja');
+    Route::get('/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
+    Route::put('/{id}', [LaporanController::class, 'update'])->name('laporan.update');
+    Route::delete('/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 });
 
+// Route Riwayat Belanja
+Route::resource('riwayat-belanja', LaporanController::class)
+    ->except(['create', 'edit', 'update', 'destroy']);
+Route::delete('riwayat-belanja/{id}', [LaporanController::class, 'destroy'])->name('riwayat_belanja.destroy');
+use App\Http\Controllers\RiwayatBelanjaController;
 
+Route::put('/riwayat-belanja/{id}', [RiwayatBelanjaController::class, 'update'])->name('riwayat_belanja.update');
 
-Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
-Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
-Route::delete('/laporan/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
-
-Route::resource('riwayat_belanja', LaporanController::class);
-
-Route::delete('riwayat_belanja/{id}', [LaporanController::class, 'destroy'])->name('riwayat_belanja.destroy');
+// Route Laporan Penjualan (pastikan controller diimport)
+Route::get('/laporan-penjualan', [LaporanPenjualanController::class, 'index'])->name('laporan-penjualan.index');

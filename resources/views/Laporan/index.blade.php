@@ -38,7 +38,7 @@
                 <th class="px-4 py-2 border">Jumlah</th>
                 <th class="px-4 py-2 border">Total Harga</th>
                 <th class="px-4 py-2 border">Tanggal Terjual</th>
-                <th class="px-4 py-2 border">Jumlah</th>
+
             </tr>
         </thead>
         <tbody>
@@ -46,10 +46,7 @@
                 <tr>
                     <td class="px-4 py-2 border">{{ $item->nama_sparepart }}</td>
                     <td class="px-4 py-2 border">{{ $item->jumlah }}</td>
-                    <td class="px-4 py-2 border">Rp {{ number_format($item->total_harga, 0, ',', '.') }}</td>
-                    <td class="px-4 py-2 border">{{ $item->tanggal_penjualan }}</td>
-                    <td class="px-4 py-2 border">{{ $item->jumlah }}</td>
-                    <td class="px-4 py-2 border">Rp{{ number_format($item->total_harga, 0, ',', '.') }}</td>
+                    <td class="px-4 py-2 border">Rp {{ number_format($item->harga_jual * $item->jumlah, 0, ',', '.') }}</td>
                 </tr>
             @endforeach
         </tbody>

@@ -11,9 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('laporan_penjualan', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('transaksi_id');
+            $table->integer('total_penjualan'); // Total pendapatan
+            $table->integer('jumlah_barang_terjual'); // Jumlah barang yang terjual
+            $table->date('periode'); // Untuk mencatat bulan dan tahun
             $table->timestamps();
+
+            // Relasi ke tabel transaksi_penjualan
+            $table->foreign('transaksi_id')->references('id')->on('transaksi_penjualan')->onDelete('cascade');
         });
     }
 
