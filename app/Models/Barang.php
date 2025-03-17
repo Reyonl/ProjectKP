@@ -17,7 +17,7 @@ class Barang extends Model
     // Jika tidak ada kolom created_at dan updated_at di tabel barang
     public $timestamps = false;
 
-    protected $fillable = ['kode_barang', 'nama_sparepart', 'modal', 'harga_jual', 'stok'];
+    protected $fillable = ['kode_barang', 'nama_sparepart', 'modal', 'harga_jual', 'stok','kategori', 'brand'];
 
     /**
      * Relasi ke tabel stok (One-to-One)

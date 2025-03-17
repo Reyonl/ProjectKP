@@ -10,26 +10,27 @@ class BarangController extends Controller
 {
     // Menampilkan daftar barang dengan fitur pencarian dan pagination
     public function index(Request $request)
-{
-    $query = Barang::query();
+    {
+        $query = Barang::query();
 
-    // Filter berdasarkan pencarian
-    if ($request->filled('search')) {
-        $query->where('kode_barang', 'like', '%' . $request->search . '%')
-              ->orWhere('nama_sparepart', 'like', '%' . $request->search . '%');
+        if ($request->filled('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%')
+                  ->orWhere('kode', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        $barang = $query->paginate(10);
+
+        return view('barang.index', compact('barang'));
     }
 
-    // Sorting berdasarkan nama barang
-    if ($request->filled('sort')) {
-        $query->orderBy('nama_sparepart', $request->sort);
-    } else {
-        $query->orderBy('nama_sparepart', 'asc'); // Default sorting A-Z
-    }
-
-    $barang = $query->paginate(10);
-
-    return view('barang.index', compact('barang'));
-}
 
     // Menampilkan form tambah barang
     public function create()

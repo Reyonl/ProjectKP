@@ -19,7 +19,7 @@
             @foreach ($riwayat as $item)
                 <tr>
                     <td class="px-4 py-2 border">{{ $item->nama_sparepart }}</td>
-                    <td class="px-4 py-2 border border-gray-200">Rp {{number_format($item->modal, 0,',','.') }}</td> {{--  ini dari table barang --}}
+                    <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->modal, 0, ',', '.') }}</td>
                     <td class="px-4 py-2 border">{{ $item->jumlah }}</td>
                     <td class="px-4 py-2 border">Rp{{ number_format($item->modal * $item->jumlah, 0, ',', '.') }}</td>
                     <td class="px-4 py-2 border">{{ $item->tanggal_belanja }}</td>
@@ -27,6 +27,12 @@
             @endforeach
         </tbody>
     </table>
+
+    <!-- Tombol Pagination -->
+    <div class="mt-4">
+        {{ $riwayat->links('pagination::tailwind') }}
+    </div>
+
 
     <h2 class="text-xl font-semibold mb-4">Riwayat Terjual</h2>
 

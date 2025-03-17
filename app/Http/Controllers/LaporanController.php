@@ -12,7 +12,7 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        // Mengambil data riwayat belanja dengan join ke tabel barang
+        // Mengambil data riwayat belanja dengan join ke tabel barang dan pagination
         $riwayat = RiwayatBelanja::select(
                 'riwayat_belanja.*',
                 'barang.nama_sparepart',
@@ -21,9 +21,9 @@ class LaporanController extends Controller
             )
             ->join('barang', 'riwayat_belanja.kode_barang', '=', 'barang.kode_barang')
             ->orderBy('riwayat_belanja.created_at', 'desc')
-            ->get();
+            ->paginate(10); // Tambahkan pagination di sini
 
-        // Mengambil data riwayat terjual dan mengurutkannya berdasarkan tanggal terbaru
+        // Mengambil data riwayat terjual dengan pagination
         $riwayatTerjual = TransaksiPenjualan::select(
                 'transaksi_penjualan.*',
                 'barang.nama_sparepart',
@@ -31,7 +31,7 @@ class LaporanController extends Controller
             )
             ->join('barang', 'transaksi_penjualan.kode_barang', '=', 'barang.kode_barang')
             ->orderBy('transaksi_penjualan.tanggal', 'desc')
-            ->get();
+            ->paginate(10); // Tambahkan pagination di sini
 
         // Total penjualan berdasarkan bulan
         $totalPenjualanBulanan = TransaksiPenjualan::selectRaw('

@@ -7,12 +7,26 @@
     <!-- Form Pencarian -->
     <form action="{{ route('barang.index') }}" method="GET" class="mb-6">
         <div class="flex items-center gap-2 justify-end">
-            <!-- Dropdown Sorting -->
-            {{-- <select name="sort" class="border border-gray-300 rounded-lg py-2 px-4 shadow-md">
-                <option value="">Urutkan</option>
-                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>A-Z</option>
-                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Z-A</option>
-            </select> --}}
+
+            <!-- Pilih Kategori -->
+            <select name="kategori"
+                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+                <option value="">Pilih Kategori</option>
+                <option value="lcd" {{ request('kategori') == 'lcd' ? 'selected' : '' }}>LCD</option>
+                <option value="lcd" {{ request('kategori') == 'baterai' ? 'selected' : '' }}>Baterai</option>
+                <option value="flexible" {{ request('kategori') == 'flexible' ? 'selected' : '' }}>Flexible</option>
+            </select>
+
+            <!-- Pilih Brand -->
+            <select name="brand"
+                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+                <option value="">Pilih Brand</option>
+                <option value="xiaomi" {{ request('brand') == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
+                <option value="samsung" {{ request('brand') == 'samsung' ? 'selected' : '' }}>Samsung</option>
+                <option value="realme" {{ request('brand') == 'realme' ? 'selected' : '' }}>Realme</option>
+                <option value="oppo" {{ request('brand') == 'oppo' ? 'selected' : '' }}>Oppo</option>
+                <option value="iphone" {{ request('brand') == 'iphone' ? 'selected' : '' }}>iPhone</option>
+            </select>
 
             <!-- Input Search -->
             <div id="search-field" class="opacity-0 scale-0 transition-all duration-300 ease-in-out origin-left">
@@ -28,7 +42,7 @@
                 Cari
             </button>
 
-            @if(request('search') || request('sort'))
+            @if(request('search') || request('sort') || request('kategori') || request('brand'))
                 <a href="{{ route('barang.index') }}"
                     class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
                     Reset
@@ -36,6 +50,7 @@
             @endif
         </div>
     </form>
+
 
 
 
