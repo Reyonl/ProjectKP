@@ -1,8 +1,10 @@
 /* public/css/custom.css */
 
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
 body {
     background-color: #f8f9fa; /* Warna latar belakang body */
-    font-family: 'Nunito', sans-serif; /* Contoh font, pastikan terhubung */
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .custom-card {
@@ -17,6 +19,7 @@ body {
 .btn-success {
     background-color: #28a745;
     border-color: #28a745;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .btn-success:hover {
@@ -24,12 +27,10 @@ body {
     border-color: #1e7e34;
 }
 
-.btn-primary {
-    border-radius: 0.5rem;
-}
-
+.btn-primary,
 .btn-outline-secondary {
     border-radius: 0.5rem;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
 .form-control {
@@ -50,7 +51,7 @@ body {
     border-radius: 0.5rem;
 }
 
-/* Optional: Styling untuk input group di aksi */
+/* Styling untuk input group di aksi */
 .input-group > .form-control.form-control-sm:not(:first-child):not(:last-child),
 .input-group > .btn.btn-outline-primary.btn-sm:not(:first-child):not(:last-child) {
     border-radius: 0;

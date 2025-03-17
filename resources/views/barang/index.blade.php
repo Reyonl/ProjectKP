@@ -1,36 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
+<div class="max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-6 itim-regular">
     <h1 class="text-2xl font-semibold mb-6 text-gray-800">Daftar Barang</h1>
 
+    <!-- Form Pencarian -->
+    <form action="{{ route('barang.index') }}" method="GET" class="mb-6">
+        <div class="flex items-center gap-2 justify-end">
 
-     <!-- Form Pencarian -->
-<form action="{{ route('barang.index') }}" method="GET" class="mb-6">
-    <div class="flex items-center gap-2">
-        <div class="relative w-full">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.35 4.35a7.5 7.5 0 0010.3 10.3z"></path>
-                </svg>
-            </span>
-            <input type="text" name="search"
-                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md transition duration-300"
-                placeholder="Cari berdasarkan nama atau kode barang..."
-                value="{{ request('search') }}">
+            <!-- Pilih Kategori -->
+            <select name="kategori" id="kategori"
+                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+                <option value="">Pilih Kategori</option>
+                <option value="lcd" {{ request('kategori') == 'lcd' ? 'selected' : '' }}>LCD</option>
+                <option value="baterai" {{ request('kategori') == 'baterai' ? 'selected' : '' }}>Baterai</option>
+                <option value="flexible" {{ request('kategori') == 'flexible' ? 'selected' : '' }}>Flexible</option>
+            </select>
+
+            <!-- Pilih Brand -->
+            <select name="brand" id="brand"
+                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+                <option value="">Pilih Brand</option>
+                <option value="xiaomi" {{ request('brand') == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
+                <option value="samsung" {{ request('brand') == 'samsung' ? 'selected' : '' }}>Samsung</option>
+                <option value="realme" {{ request('brand') == 'realme' ? 'selected' : '' }}>Realme</option>
+                <option value="oppo" {{ request('brand') == 'oppo' ? 'selected' : '' }}>Oppo</option>
+                <option value="iphone" {{ request('brand') == 'iphone' ? 'selected' : '' }}>iPhone</option>
+            </select>
+
+            <!-- Input Search -->
+            <div id="search-field" class="{{ request('search') || request('kategori') || request('brand') ? 'opacity-100 scale-100' : 'opacity-0 scale-0' }} transition-all duration-300 ease-in-out origin-left">
+                <input type="text" name="search"
+                    class="w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md"
+                    placeholder="Cari berdasarkan nama atau kode barang..."
+                    value="{{ request('search') }}">
+            </div>
+
+            <!-- Tombol Cari -->
+            <button type="submit"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
+                Cari
+            </button>
+
+            @if(request('search') || request('kategori') || request('brand'))
+                <a href="{{ route('barang.index') }}"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
+                    Reset
+                </a>
+            @endif
         </div>
-        <button type="submit"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
-            Cari
-        </button>
-        @if(request('search'))
-            <a href="{{ route('barang.index') }}"
-                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
-                Reset
-            </a>
-        @endif
-    </div>
-</form>
+    </form>
 
     <!-- Button Tambah Barang -->
     <div class="mb-4">
@@ -41,54 +60,98 @@
     </div>
 
     <!-- Tabel Daftar Barang -->
-    <div class="overflow-x-auto">
-        <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg shadow-md">
-            <thead>
-                <tr class="bg-gray-100 text-gray-700">
-                    <th class="px-4 py-2 border border-gray-200 text-center">No</th>
+    <table class="w-full border-collapse border border-gray-200">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border border-gray-200 text-center">No</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Kode Barang</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Nama Barang</th>
+                    <th class="px-4 py-2 border border-gray-200 text-left">Harga Modal</th>
+                    <th class="px-4 py-2 border border-gray-200 text-left">Harga Jual</th>
                     <th class="px-4 py-2 border border-gray-200 text-center">Stok</th>
                     <th class="px-4 py-2 border border-gray-200 text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($barang as $item)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 border border-gray-200 text-center">{{ $loop->iteration }}</td>
-                    <td class="px-4 py-3 border border-gray-200">{{ $item->kode_barang }}</td>
-                    <td class="px-4 py-3 border border-gray-200">{{ $item->nama_sparepart }}</td>
-                    <td class="px-4 py-3 border border-gray-200 text-center">{{ $item->stok }}</td>
-                    <td class="px-4 py-3 border border-gray-200">
-                        <!-- Form Update Stok -->
-                        <form action="{{ route('barang.update-stok', ['kode_barang' => $item->kode_barang]) }}" method="POST" class="flex items-center gap-2">
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($barang as $index => $item)
+                <tr>
+                    <td class="px-4 py-2 border border-gray-200 text-center">{{ ($barang->currentPage() - 1) * $barang->perPage() + $loop->iteration }}</td>
+                    <td class="px-4 py-2 border border-gray-200">{{ $item->kode_barang }}</td>
+                    <td class="px-4 py-2 border border-gray-200">{{ $item->nama_sparepart }}</td>
+                    <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->modal, 0, ',', '.') }}</td>
+                    <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
+                    <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
+                    <td class="px-4 py-2 border border-gray-200 text-center">
+                        <!-- Tombol Update Stok -->
+                        <button onclick="confirmDelete('{{ $item->kode_barang }}')"
+                            class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                            Update Stok
+                        </button>
+
+                        <!-- Tombol Edit -->
+                        <a href="{{ route('barang.edit', $item->kode_barang) }}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded ml-2">
+                            Edit
+                        </a>
+
+                        <!-- Tombol Hapus -->
+                        <form id="delete-form-{{ $item->kode_barang }}" action="{{ route('barang.destroy', $item->kode_barang) }}" method="POST" class="inline-block ml-2">
                             @csrf
-                            @method('PATCH')
-                            <input type="number" name="stok"
-                                class="w-24 px-3 py-1 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Stok baru" min="0" required>
-                            <button type="submit"
-                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-lg shadow transition duration-300">
-                                Update
+                            @method('DELETE')
+                            <button type="button" onclick="confirmDelete('{{ $item->kode_barang }}')"
+                                class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+                                Hapus
                             </button>
                         </form>
                     </td>
                 </tr>
                 @endforeach
-            </tbody>
-        </table>
+
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="mt-4">
+        {{ $barang->links() }}
     </div>
 </div>
 
-<!-- SweetAlert untuk pesan error -->
-@if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: '{{ session('error') }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
+<!-- SweetAlert -->
+<script>
+function confirmDelete(kodeBarang) {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: 'Data yang dihapus tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-${kodeBarang}`).submit();
+        }
+    });
+}
+
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session('success') }}',
+        showConfirmButton: false,
+        timer: 1500
+    });
 @endif
+
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '{{ session('error') }}',
+        confirmButtonText: 'OK'
+    });
+@endif
+</script>
 @endsection

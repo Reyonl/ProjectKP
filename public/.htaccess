@@ -23,3 +23,6 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+Header set Content-Security-Policy "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;"
+

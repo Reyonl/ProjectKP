@@ -10,3 +10,145 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* General Styling */
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #f3f4f6;
+    color: #333;
+}
+
+/* Sidebar Styling */
+/* Styling untuk sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #1f2937; /* Warna lebih gelap untuk kontras */
+    color: #ffffff;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Logo dan judul */
+.sidebar .logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #60a5fa; /* Warna biru muda */
+    margin-bottom: 20px;
+}
+
+/* Item menu */
+.sidebar .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.sidebar .menu-item:hover {
+    background-color: #374151;
+}
+
+.sidebar .menu-item.active {
+    background-color: #3b82f6; /* Warna biru aktif */
+    color: #ffffff;
+}
+
+/* Ikon */
+.sidebar .menu-item i {
+    font-size: 22px;
+    margin-right: 12px;
+}
+
+/* Teks */
+.sidebar .menu-item span {
+    font-size: 16px;
+}
+
+/* Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #6b7280;
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: #4b5563;
+}
+
+
+/* Navbar Styling */
+.navbar {
+    background-color: #ffffff;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+.navbar h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.navbar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.navbar svg {
+    width: 24px;
+    height: 24px;
+    color: #1f2937;
+    transition: color 0.3s ease;
+}
+
+.navbar button:hover svg {
+    color: #4b5563;
+}
+
+/* Content Styling */
+.content {
+    margin-left: 260px;
+    padding: 1.5rem;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    transition: margin-left 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    #sidebar {
+        transform: translateX(-100%);
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    #sidebar.open {
+        transform: translateX(0);
+    }
+
+}
+
+.itim-regular {
+    font-family: "Itim", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
