@@ -4,6 +4,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Alpine.js v3 -->
 <script src="//unpkg.com/alpinejs" defer></script>
 
@@ -18,13 +21,15 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 min-h-screen" style="font-family: serif">
+
 
 <div class="flex">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-64 bg-gray-800 min-h-screen text-white transform -translate-x-full transition-transform duration-300 lg:translate-x-0">
+    <div id="sidebar" class="w-64 bg-gray-800 min-h-screen text-white transform -translate-x-full transition-transform duration-300 lg:translate-x-0" >
         <div class="p-4 border-b border-gray-700">
-            <h1 class="text-2xl font-bold tracking-wide">Enoni Cellular</h1>
+            <h1 class="text-1xl font-extrabold tracking-wide">Enoni Cellular</h1>
+
         </div>
 
         <ul class="mt-4">
@@ -41,7 +46,7 @@
         </ul>
 
         <!-- Master Section -->
-        <div class="mt-6 px-3 text-gray-400 uppercase text-sm tracking-wide">Master</div>
+        <div class="mt-2 px-3 text-gray-400 uppercase text-sm tracking-wide">Master</div>
         <ul class="mt-2">
             <li>
                 <a href="{{ route('barang.index') }}"
@@ -56,7 +61,7 @@
         </ul>
 
         <!-- Teknisi Section -->
-        <div class="mt-6 px-3 text-gray-400 uppercase text-sm tracking-wide">Teknisi</div>
+        <div class="mt-2 px-3 text-gray-400 uppercase text-sm tracking-wide">Teknisi</div>
         <ul class="mt-2">
             <li>
                 <a href="#"
@@ -71,7 +76,7 @@
         </ul>
 
         <!-- Laporan Section -->
-        <div class="mt-6 px-3 text-gray-400 uppercase text-sm tracking-wide">Laporan</div>
+        <div class="mt-2 px-3 text-gray-400 uppercase text-sm tracking-wide">Laporan</div>
         <ul class="mt-2">
             <li>
                 <a href="{{ route('laporan.index') }}"

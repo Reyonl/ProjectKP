@@ -9,16 +9,16 @@
         <div class="flex items-center gap-2 justify-end">
 
             <!-- Pilih Kategori -->
-            <select name="kategori"
+            <select name="kategori" id="kategori"
                 class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
                 <option value="">Pilih Kategori</option>
                 <option value="lcd" {{ request('kategori') == 'lcd' ? 'selected' : '' }}>LCD</option>
-                <option value="lcd" {{ request('kategori') == 'baterai' ? 'selected' : '' }}>Baterai</option>
+                <option value="baterai" {{ request('kategori') == 'baterai' ? 'selected' : '' }}>Baterai</option>
                 <option value="flexible" {{ request('kategori') == 'flexible' ? 'selected' : '' }}>Flexible</option>
             </select>
 
             <!-- Pilih Brand -->
-            <select name="brand"
+            <select name="brand" id="brand"
                 class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
                 <option value="">Pilih Brand</option>
                 <option value="xiaomi" {{ request('brand') == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
@@ -29,7 +29,7 @@
             </select>
 
             <!-- Input Search -->
-            <div id="search-field" class="opacity-0 scale-0 transition-all duration-300 ease-in-out origin-left">
+            <div id="search-field" class="{{ request('search') || request('kategori') || request('brand') ? 'opacity-100 scale-100' : 'opacity-0 scale-0' }} transition-all duration-300 ease-in-out origin-left">
                 <input type="text" name="search"
                     class="w-72 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md"
                     placeholder="Cari berdasarkan nama atau kode barang..."
@@ -42,7 +42,7 @@
                 Cari
             </button>
 
-            @if(request('search') || request('sort') || request('kategori') || request('brand'))
+            @if(request('search') || request('kategori') || request('brand'))
                 <a href="{{ route('barang.index') }}"
                     class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition duration-300">
                     Reset
@@ -50,9 +50,6 @@
             @endif
         </div>
     </form>
-
-
-
 
     <!-- Button Tambah Barang -->
     <div class="mb-4">
@@ -63,124 +60,98 @@
     </div>
 
     <!-- Tabel Daftar Barang -->
-    <div class="overflow-x-auto itim-regular">
-        <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg shadow-md">
-            <thead>
-                <th>
-                    Nama Barang
-                    @if(request('sort') == 'asc')
-                        🔼
-                    @elseif(request('sort') == 'desc')
-                        🔽
-                    @endif
-                </th>
-
-                <tr class="bg-gray-100 text-gray-700">
-                    <th class="px-4 py-2 border border-gray-200 text-center">No</th>
+    <table class="w-full border-collapse border border-gray-200">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border border-gray-200 text-center">No</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Kode Barang</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Nama Barang</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Harga Modal</th>
                     <th class="px-4 py-2 border border-gray-200 text-left">Harga Jual</th>
                     <th class="px-4 py-2 border border-gray-200 text-center">Stok</th>
                     <th class="px-4 py-2 border border-gray-200 text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($barang as $index => $item)
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($barang as $index => $item)
                 <tr>
-                    <td class="px-4 py-2 border border-gray-200 text-center">{{ ($barang->currentPage() - 1) * $barang->perPage() + $index + 1 }}</td>
+                    <td class="px-4 py-2 border border-gray-200 text-center">{{ ($barang->currentPage() - 1) * $barang->perPage() + $loop->iteration }}</td>
                     <td class="px-4 py-2 border border-gray-200">{{ $item->kode_barang }}</td>
                     <td class="px-4 py-2 border border-gray-200">{{ $item->nama_sparepart }}</td>
                     <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->modal, 0, ',', '.') }}</td>
                     <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
                     <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
                     <td class="px-4 py-2 border border-gray-200 text-center">
-                        <div x-data="{ open: false }">
-                            <!-- Tombol untuk membuka pop-up -->
-                            <button @click="open = true" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
-                                Update Stok
-                            </button>
+                        <!-- Tombol Update Stok -->
+                        <button onclick="confirmDelete('{{ $item->kode_barang }}')"
+                            class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded">
+                            Update Stok
+                        </button>
 
-                            <!-- Pop-up Modal -->
-                            <div x-show="open"
-                                x-transition:enter="transition ease-out duration-200 transform"
-                                x-transition:enter-start="opacity-0 scale-90"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-150 transform"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-90"
-                                class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-                            >
-                                <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-                                    <h2 class="text-lg font-semibold mb-4">Tambah Stok</h2>
-
-                                    <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST">
-                                        @csrf
-                                        <div class="mb-4">
-                                            <label for="jumlah" class="block text-gray-700 font-medium">Jumlah Stok</label>
-                                            <input type="number" name="jumlah" min="1" value="1" required
-                                                class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500">
-                                        </div>
-
-                                        <div class="flex justify-end space-x-2">
-                                            <button type="button" @click="open = false"
-                                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">
-                                                Batal
-                                            </button>
-                                            <button type="submit"
-                                                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                                                Simpan
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        </form>
-                        <a href="{{ route('barang.edit', $item->kode_barang) }}" class="ml-2 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded">
+                        <!-- Tombol Edit -->
+                        <a href="{{ route('barang.edit', $item->kode_barang) }}"
+                            class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded ml-2">
                             Edit
                         </a>
+
+                        <!-- Tombol Hapus -->
+                        <form id="delete-form-{{ $item->kode_barang }}" action="{{ route('barang.destroy', $item->kode_barang) }}" method="POST" class="inline-block ml-2">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" onclick="confirmDelete('{{ $item->kode_barang }}')"
+                                class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+                                Hapus
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
-            </tbody>
-        </table>
 
-        <!-- Pagination -->
-        <div class="mt-4">
-            {{ $barang->links('pagination::tailwind') }}
-        </div>
+        </tbody>
+    </table>
 
+    <!-- Pagination -->
+    <div class="mt-4">
+        {{ $barang->links() }}
     </div>
 </div>
 
-<!-- SweetAlert untuk pesan error -->
-@if (session('error'))
+<!-- SweetAlert -->
 <script>
-
-document.addEventListener('DOMContentLoaded', () => {
-        const searchBtn = document.getElementById('search-btn');
-        const searchField = document.getElementById('search-field');
-
-        searchBtn.addEventListener('click', () => {
-            if (searchField.classList.contains('opacity-0')) {
-                searchField.classList.remove('opacity-0', 'scale-0');
-                searchField.classList.add('opacity-100', 'scale-100');
-            } else {
-                searchField.classList.add('opacity-0', 'scale-0');
-                searchField.classList.remove('opacity-100', 'scale-100');
-            }
-        });
-
+function confirmDelete(kodeBarang) {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: 'Data yang dihapus tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-${kodeBarang}`).submit();
+        }
     });
+}
+
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '{{ session('success') }}',
+        showConfirmButton: false,
+        timer: 1500
+    });
+@endif
+
+@if(session('error'))
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: '{{ session('error') }}',
         confirmButtonText: 'OK'
     });
-</script>
 @endif
+</script>
 @endsection

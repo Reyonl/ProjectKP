@@ -9,24 +9,43 @@ use Illuminate\Support\Facades\DB;
 class BarangController extends Controller
 {
     // Menampilkan daftar barang dengan fitur pencarian dan pagination
+
+    public function destroy($kode_barang)
+    {
+        $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
+        $barang->delete();
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus!');
+    }
+
+
     public function index(Request $request)
     {
         $query = Barang::query();
 
+        $filters = array_filter([
+            'kategori' => $request->kategori,
+            'brand' => $request->brand,
+        ]);
+
         if ($request->filled('search')) {
-            $query->where('nama', 'like', '%' . $request->search . '%')
-                  ->orWhere('kode', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_sparepart', 'like', "%{$request->search}%")
+                  ->orWhere('kode_barang', 'like', "%{$request->search}%");
+            });
         }
 
-        if ($request->filled('kategori')) {
-            $query->where('kategori', $request->kategori);
+        if (isset($filters['kategori'])) {
+            $query->where('kategori', $filters['kategori']);
         }
 
-        if ($request->filled('brand')) {
-            $query->where('brand', $request->brand);
+        if (isset($filters['brand'])) {
+            $query->where('brand', $filters['brand']);
         }
 
         $barang = $query->paginate(10);
+
+
 
         return view('barang.index', compact('barang'));
     }

@@ -19,6 +19,7 @@ Route::prefix('barang')->group(function () {
     Route::get('/', [BarangController::class, 'index'])->name('barang.index');
     Route::get('/create', [BarangController::class, 'create'])->name('barang.create');
     Route::post('/', [BarangController::class, 'store'])->name('barang.store');
+    Route::delete('/barang/{kode_barang}', [BarangController::class, 'destroy'])->name('barang.destroy');
     Route::patch('/{kode_barang}/update-stok', [BarangController::class, 'updateStok'])->name('barang.update-stok');
     Route::get('/barang/{kode_barang}/edit', [BarangController::class, 'edit'])->name('barang.edit');
     Route::put('/barang/{kode_barang}', [BarangController::class, 'update'])->name('barang.update');
