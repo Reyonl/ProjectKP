@@ -158,21 +158,29 @@
 @if (!empty($notifications))
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let notifications = @json($notifications);
-            notifications.forEach((message, index) => {
-                setTimeout(() => {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'warning',
-                        title: message,
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true
+    let notifications = @json($notifications);
+    notifications.forEach((message, index) => {
+        setTimeout(() => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'warning',
+                title: message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    // Event listener untuk mengarahkan ke halaman tertentu saat diklik
+                    toast.addEventListener('click', () => {
+                        // Arahkan ke halaman detail atau update stok
+                        window.location.href = "{{ route('barang.edit', $item->kode_barang) }}";
                     });
-                }, index * 3500); // Jeda antar notifikasi 3.5 detik
+                }
             });
-        });
+        }, index * 3500); // Jeda antar notifikasi 3.5 detik
+    });
+});
+
 
         // Fungsi konfirmasi hapus
         function confirmDelete(kode_barang) {
