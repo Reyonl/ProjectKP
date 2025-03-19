@@ -93,46 +93,47 @@
         <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
         <td class="px-4 py-2 border border-gray-200 text-center">
             <div x-data="{ open: false }">
-                <!-- Tombol untuk membuka modal -->
-                <button @click="open = true" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
-                    Update Stok
-                </button>
+    <!-- Tombol untuk membuka modal -->
+    <button @click="open = true" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
+        Update Stok
+    </button>
 
-                <!-- Pop-up Modal -->
-                <div x-show="open" x-cloak style="display: none;"
-                    x-transition:enter="transition ease-out duration-200 transform"
-                    x-transition:enter-start="opacity-0 scale-90"
-                    x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-150 transform"
-                    x-transition:leave-start="opacity-100 scale-100"
-                    x-transition:leave-end="opacity-0 scale-90"
-                    class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-                >
-                    <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-                        <h2 class="text-lg font-semibold mb-4">Tambah Stok</h2>
+    <!-- Pop-up Modal -->
+    <div x-show="open" x-cloak style="display: none;"
+        x-transition:enter="transition ease-out duration-200 transform"
+        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150 transform"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-90"
+        class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+    >
+        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-lg font-semibold mb-4">Tambah Stok</h2>
 
-                        <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST">
-                            @csrf
-                            <div class="mb-4">
-                                <label for="jumlah" class="block text-gray-700 font-medium">Jumlah Stok</label>
-                                <input type="number" name="jumlah" min="1" value="1" required
-                                    class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500">
-                            </div>
-
-                            <div class="flex justify-end space-x-2">
-                                <button type="button" @click="open = false"
-                                    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">
-                                    Batal
-                                </button>
-                                <button type="submit"
-                                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="jumlah" class="block text-gray-700 font-medium">Jumlah Stok</label>
+                    <input type="number" name="jumlah" min="1" value="1" required
+                        class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
-            </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button type="button" @click="open = false"
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 
