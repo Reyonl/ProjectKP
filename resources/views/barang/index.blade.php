@@ -9,24 +9,27 @@
         <div class="flex items-center gap-2 justify-end">
 
             <!-- Pilih Kategori -->
-            <select name="kategori" id="kategori"
-                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
-                <option value="">Pilih Kategori</option>
-                <option value="lcd" {{ request('kategori') == 'lcd' ? 'selected' : '' }}>LCD</option>
-                <option value="baterai" {{ request('kategori') == 'baterai' ? 'selected' : '' }}>Baterai</option>
-                <option value="flexible" {{ request('kategori') == 'flexible' ? 'selected' : '' }}>Flexible</option>
-            </select>
 
-            <!-- Pilih Brand -->
-            <select name="brand" id="brand"
-                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
-                <option value="">Pilih Brand</option>
-                <option value="xiaomi" {{ request('brand') == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
-                <option value="samsung" {{ request('brand') == 'samsung' ? 'selected' : '' }}>Samsung</option>
-                <option value="realme" {{ request('brand') == 'realme' ? 'selected' : '' }}>Realme</option>
-                <option value="oppo" {{ request('brand') == 'oppo' ? 'selected' : '' }}>Oppo</option>
-                <option value="iphone" {{ request('brand') == 'iphone' ? 'selected' : '' }}>iPhone</option>
-            </select>
+            <select name="kategori" id="kategori"
+            class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+        <option value="">Pilih Kategori</option>
+        <option value="lcd" {{ strtolower(request('kategori')) == 'lcd' ? 'selected' : '' }}>LCD</option>
+        <option value="baterai" {{ strtolower(request('kategori')) == 'baterai' ? 'selected' : '' }}>Baterai</option>
+        <option value="flexibel" {{ strtolower(request('kategori')) == 'flexibel' ? 'selected' : '' }}>Flexible</option>
+    </select>
+
+
+    <!-- Pilih Brand -->
+    <select name="brand" id="brand"
+        class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+        <option value="">Pilih Brand</option>
+        <option value="xiaomi" {{ strtolower(request('brand')) == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
+        <option value="samsung" {{ strtolower(request('brand')) == 'samsung' ? 'selected' : '' }}>Samsung</option>
+        <option value="realme" {{ strtolower(request('brand')) == 'realme' ? 'selected' : '' }}>Realme</option>
+        <option value="oppo" {{ strtolower(request('brand')) == 'oppo' ? 'selected' : '' }}>Oppo</option>
+        <option value="iphone" {{ strtolower(request('brand')) == 'iphone' ? 'selected' : '' }}>iPhone</option>
+        <option value="vivo" {{ strtolower(request('brand')) == 'vivo' ? 'selected' : '' }}>Vivo</option>
+    </select>
 
             <!-- Input Search -->
             <div id="search-field" class="{{ request('search') || request('kategori') || request('brand') ? 'opacity-100 scale-100' : 'opacity-0 scale-0' }} transition-all duration-300 ease-in-out origin-left">
