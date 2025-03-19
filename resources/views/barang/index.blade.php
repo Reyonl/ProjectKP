@@ -247,7 +247,7 @@
 
     <!-- Pagination -->
     <div class="mt-4">
-        {{ $barang->links() }}
+        {{ $barang->appends(request()->all())->links() }}
     </div>
 </div>
 
