@@ -9,27 +9,24 @@
         <div class="flex items-center gap-2 justify-end">
 
             <!-- Pilih Kategori -->
-
             <select name="kategori" id="kategori"
-            class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
-        <option value="">Pilih Kategori</option>
-        <option value="lcd" {{ strtolower(request('kategori')) == 'lcd' ? 'selected' : '' }}>LCD</option>
-        <option value="baterai" {{ strtolower(request('kategori')) == 'baterai' ? 'selected' : '' }}>Baterai</option>
-        <option value="flexibel" {{ strtolower(request('kategori')) == 'flexibel' ? 'selected' : '' }}>Flexible</option>
-    </select>
+                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+                <option value="">Pilih Kategori</option>
+                <option value="lcd" {{ request('kategori') == 'lcd' ? 'selected' : '' }}>LCD</option>
+                <option value="baterai" {{ request('kategori') == 'baterai' ? 'selected' : '' }}>Baterai</option>
+                <option value="flexible" {{ request('kategori') == 'flexible' ? 'selected' : '' }}>Flexible</option>
+            </select>
 
-
-    <!-- Pilih Brand -->
-    <select name="brand" id="brand"
-        class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
-        <option value="">Pilih Brand</option>
-        <option value="xiaomi" {{ strtolower(request('brand')) == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
-        <option value="samsung" {{ strtolower(request('brand')) == 'samsung' ? 'selected' : '' }}>Samsung</option>
-        <option value="realme" {{ strtolower(request('brand')) == 'realme' ? 'selected' : '' }}>Realme</option>
-        <option value="oppo" {{ strtolower(request('brand')) == 'oppo' ? 'selected' : '' }}>Oppo</option>
-        <option value="iphone" {{ strtolower(request('brand')) == 'iphone' ? 'selected' : '' }}>iPhone</option>
-        <option value="vivo" {{ strtolower(request('brand')) == 'vivo' ? 'selected' : '' }}>Vivo</option>
-    </select>
+            <!-- Pilih Brand -->
+            <select name="brand" id="brand"
+                class="w-40 pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-md">
+                <option value="">Pilih Brand</option>
+                <option value="xiaomi" {{ request('brand') == 'xiaomi' ? 'selected' : '' }}>Xiaomi</option>
+                <option value="samsung" {{ request('brand') == 'samsung' ? 'selected' : '' }}>Samsung</option>
+                <option value="realme" {{ request('brand') == 'realme' ? 'selected' : '' }}>Realme</option>
+                <option value="oppo" {{ request('brand') == 'oppo' ? 'selected' : '' }}>Oppo</option>
+                <option value="iphone" {{ request('brand') == 'iphone' ? 'selected' : '' }}>iPhone</option>
+            </select>
 
             <!-- Input Search -->
             <div id="search-field" class="{{ request('search') || request('kategori') || request('brand') ? 'opacity-100 scale-100' : 'opacity-0 scale-0' }} transition-all duration-300 ease-in-out origin-left">
@@ -76,83 +73,172 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($barang as $index => $item)
-                <tr>
-                    <td class="px-4 py-2 border border-gray-200 text-center">{{ ($barang->currentPage() - 1) * $barang->perPage() + $loop->iteration }}</td>
-                    <td class="px-4 py-2 border border-gray-200">{{ $item->kode_barang }}</td>
-                    <td class="px-4 py-2 border border-gray-200">{{ $item->nama_sparepart }}</td>
-                    <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->modal, 0, ',', '.') }}</td>
-                    <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
-                    <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
-                    <td class="px-4 py-2 border border-gray-200 text-center">
+            @php
+    $notifications = [];
+@endphp
 
-                        <div x-data="{ open: false }">
-                            <!-- Tombol untuk membuka pop-up -->
-                            <button @click="open = true" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
-                                Update Stok
-                            </button>
+@foreach ($barang as $index => $item)
+    @if ($item->stok <= 1)
+        @php
+            $notifications[] = "Stok $item->nama_sparepart tinggal $item->stok lagi!";
+        @endphp
+    @endif
 
-                            <!-- Pop-up Modal -->
-                            <div x-show="open"
-                                x-transition:enter="transition ease-out duration-200 transform"
-                                x-transition:enter-start="opacity-0 scale-90"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-150 transform"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-90"
-                                class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-                            >
-                                <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-                                    <h2 class="text-lg font-semibold mb-4">Tambah Stok</h2>
+    <tr>
+        <td class="px-4 py-2 border border-gray-200 text-center">{{ ($barang->currentPage() - 1) * $barang->perPage() + $loop->iteration }}</td>
+        <td class="px-4 py-2 border border-gray-200">{{ $item->kode_barang }}</td>
+        <td class="px-4 py-2 border border-gray-200">{{ $item->nama_sparepart }}</td>
+        <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->modal, 0, ',', '.') }}</td>
+        <td class="px-4 py-2 border border-gray-200">Rp {{ number_format($item->harga_jual, 0, ',', '.') }}</td>
+        <td class="px-4 py-2 border border-gray-200 text-center">{{ $item->stok }}</td>
+        <td class="px-4 py-2 border border-gray-200 text-center">
+            <div x-data="{ open: false }">
+                <!-- Tombol untuk membuka modal -->
+                <button @click="open = true" class="bg-green-500 hover:bg-green-600 text-white font-medium py-1 px-3 rounded">
+                    Update Stok
+                </button>
 
-                                    <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST">
-                                        @csrf
-                                        <div class="mb-4">
-                                            <label for="jumlah" class="block text-gray-700 font-medium">Jumlah Stok</label>
-                                            <input type="number" name="jumlah" min="1" value="1" required
-                                                class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500">
-                                        </div>
+                <!-- Pop-up Modal -->
+                <div x-show="open" x-cloak style="display: none;"
+                    x-transition:enter="transition ease-out duration-200 transform"
+                    x-transition:enter-start="opacity-0 scale-90"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150 transform"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-90"
+                    class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+                >
+                    <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+                        <h2 class="text-lg font-semibold mb-4">Tambah Stok</h2>
 
-                                        <div class="flex justify-end space-x-2">
-                                            <button type="button" @click="open = false"
-                                                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">
-                                                Batal
-                                            </button>
-                                            <button type="submit"
-                                                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                                                Simpan
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tombol Edit -->
-                        <a href="{{ route('barang.edit', $item->kode_barang) }}"
-                            class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded ml-2">
-                            Edit
-                        </a>
-
-                        <!-- Tombol Hapus -->
-                        <form id="delete-form-{{ $item->kode_barang }}" action="{{ route('barang.destroy', $item->kode_barang) }}" method="POST" class="inline-block ml-2">
+                        <form action="{{ route('barang.belanja', $item->kode_barang) }}" method="POST">
                             @csrf
-                            @method('DELETE')
-                            <button type="button" onclick="confirmDelete('{{ $item->kode_barang }}')"
-                                class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
-                                Hapus
-                            </button>
+                            <div class="mb-4">
+                                <label for="jumlah" class="block text-gray-700 font-medium">Jumlah Stok</label>
+                                <input type="number" name="jumlah" min="1" value="1" required
+                                    class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+
+                            <div class="flex justify-end space-x-2">
+                                <button type="button" @click="open = false"
+                                    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-gray-800">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                                    Simpan
+                                </button>
+                            </div>
                         </form>
-                    </td>
-                </tr>
-                @endforeach
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Tombol Edit -->
+            <a href="{{ route('barang.edit', $item->kode_barang) }}"
+                class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded ml-2">
+                Edit
+            </a>
+
+            <!-- Tombol Hapus -->
+            <form id="delete-form-{{ $item->kode_barang }}" action="{{ route('barang.destroy', $item->kode_barang) }}" method="POST" class="inline-block ml-2">
+                @csrf
+                @method('DELETE')
+                <button type="button" onclick="confirmDelete('{{ $item->kode_barang }}')"
+                    class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+                    Hapus
+                </button>
+            </form>
+        </td>
+    </tr>
+@endforeach
+
+@if (!empty($notifications))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let notifications = @json($notifications);
+            notifications.forEach((message, index) => {
+                setTimeout(() => {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'warning',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                }, index * 3500); // Jeda antar notifikasi 3.5 detik
+            });
+        });
+
+        // Fungsi konfirmasi hapus
+        function confirmDelete(kode_barang) {
+            Swal.fire({
+                title: 'Apakah kamu yakin?',
+                text: "Data ini akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(`delete-form-${kode_barang}`).submit();
+                }
+            });
+        }
+
+        // Fungsi update stok
+        function updateStok(kode_barang) {
+            Swal.fire({
+                title: 'Update Stok',
+                input: 'number',
+                inputAttributes: {
+                    min: 0,
+                    step: 1
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                preConfirm: (stokBaru) => {
+                    if (!stokBaru || stokBaru < 0) {
+                        Swal.showValidationMessage('Stok tidak boleh kosong atau negatif!');
+                    } else {
+                        // Kirim data update ke backend menggunakan AJAX
+                        fetch(`/barang/update-stok/${kode_barang}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ stok: stokBaru })
+                        }).then(response => {
+                            if (response.ok) {
+                                Swal.fire('Sukses!', 'Stok berhasil diperbarui', 'success').then(() => {
+                                    location.reload(); // Reload halaman setelah update
+                                });
+                            } else {
+                                Swal.fire('Error!', 'Terjadi kesalahan saat memperbarui stok', 'error');
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+@endif
+
 
         </tbody>
     </table>
 
     <!-- Pagination -->
     <div class="mt-4">
-        {{ $barang->appends(request()->all())->links() }}
+        {{ $barang->links() }}
     </div>
 </div>
 
