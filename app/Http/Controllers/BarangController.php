@@ -10,6 +10,29 @@ class BarangController extends Controller
 {
     // Menampilkan daftar barang dengan fitur pencarian dan pagination
 
+
+    public function index(Request $request) {
+
+        $query = \DB::table('barang');
+        $kategoriList = Barang::select('kategori')->distinct()->get();
+        $brandList = Barang::select('brand')->distinct()->get();
+
+        $barang = Barang::when($request->kategori, function ($query) use ($request) {
+                        $query->where('kategori', $request->kategori);
+                    })
+                    ->when($request->brand, function ($query) use ($request) {
+                        $query->where('brand', $request->brand);
+                    })
+                    ->when($request->search, function ($query) use ($request) {
+                        $query->where('nama_sparepart', 'like', '%' . $request->search . '%');
+                    })
+                    ->paginate(10);
+
+        return view('barang.index', compact('barang', 'kategoriList', 'brandList'));
+    }
+
+
+
     public function destroy($kode_barang)
     {
         $barang = Barang::where('kode_barang', $kode_barang)->firstOrFail();
@@ -19,36 +42,35 @@ class BarangController extends Controller
     }
 
 
-    public function index(Request $request)
-    {
-        $query = Barang::query();
+    // // public function index(Request $request)
+    // {
+    //     $query = Barang::query();
 
-        $filters = array_filter([
-            'kategori' => $request->kategori,
-            'brand' => $request->brand,
-        ]);
+    //     $filters = array_filter([
+    //         'kategori' => $request->kategori,
+    //         'brand' => $request->brand,
+    //     ]);
 
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('nama_sparepart', 'like', "%{$request->search}%")
-                  ->orWhere('kode_barang', 'like', "%{$request->search}%");
-            });
-        }
+    //     if ($request->filled('search')) {
+    //         $query->where(function ($q) use ($request) {
+    //             $q->where('nama_sparepart', 'like', "%{$request->search}%")
+    //               ->orWhere('kode_barang', 'like', "%{$request->search}%");
+    //         });
+    //     }
 
-        if (isset($filters['kategori'])) {
-            $query->where('kategori', $filters['kategori']);
-        }
+    //     if (isset($filters['kategori'])) {
+    //         $query->where('kategori', $filters['kategori']);
+    //     }
 
-        if (isset($filters['brand'])) {
-            $query->where('brand', $filters['brand']);
-        }
-
-        $barang = $query->paginate(10);
+    //     if (isset($filters['brand'])) {
+    //         $query->where('brand', $filters['brand']);
+    //     }
 
 
 
-        return view('barang.index', compact('barang'));
-    }
+
+    //     return view('barang.index', compact('barang'));
+    // }
 
 
     // Menampilkan form tambah barang

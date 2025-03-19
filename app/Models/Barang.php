@@ -42,4 +42,5 @@ class Barang extends Model
     {
         return $this->hasMany(Pembelian::class, 'kode_barang', 'kode_barang');
     }
+
 }
